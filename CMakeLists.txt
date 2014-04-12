@@ -1,4 +1,3 @@
-
 cmake_minimum_required(VERSION 2.8)
 
 # define a macro that helps defining an option
@@ -35,6 +34,9 @@ sfml_set_option(SFML_BUILD_EXAMPLES FALSE BOOL "TRUE to build the SFML examples,
 
 # add an option for building the API documentation
 sfml_set_option(SFML_BUILD_DOC FALSE BOOL "TRUE to generate the API documentation, FALSE to ignore it")
+
+# add an option for installing Third-Party frameworks
+sfml_set_option(SFML_INSTALL_THIRD_PARTY TRUE BOOL "TRUE if third-party libraries will be installed, FALSE to not install")
 
 # Mac OS X specific options
 if(SFML_OS_MACOSX)
@@ -191,27 +193,29 @@ install(FILES license.txt DESTINATION ${INSTALL_MISC_DIR})
 install(FILES readme.txt DESTINATION ${INSTALL_MISC_DIR})
 
 # install 3rd-party libraries and tools on Windows and OS X
-if(SFML_OS_WINDOWS)
-    if(ARCH_32BITS)
-        install(DIRECTORY extlibs/bin/x86/ DESTINATION bin)
-        if(SFML_COMPILER_MSVC)
-            install(DIRECTORY extlibs/libs-msvc/x86/ DESTINATION lib)
-        else()
-            install(DIRECTORY extlibs/libs-mingw/x86/ DESTINATION lib)
-        endif()
-    elseif(ARCH_64BITS)
-        install(DIRECTORY extlibs/bin/x64/ DESTINATION bin)
-        if(SFML_COMPILER_MSVC)
-            install(DIRECTORY extlibs/libs-msvc/x64/ DESTINATION lib)
-        else()
-            install(DIRECTORY extlibs/libs-mingw/x64/ DESTINATION lib)
-        endif()
-    endif()
-elseif(SFML_OS_MACOSX)
-    install(DIRECTORY extlibs/libs-osx/Frameworks/sndfile.framework DESTINATION ${CMAKE_INSTALL_FRAMEWORK_PREFIX})
-    install(DIRECTORY extlibs/libs-osx/Frameworks/freetype.framework DESTINATION ${CMAKE_INSTALL_FRAMEWORK_PREFIX})
-
-    if(SFML_INSTALL_XCODE4_TEMPLATES)
-        install(DIRECTORY tools/xcode/templates/SFML DESTINATION /Library/Developer/Xcode/Templates)
-    endif()
+if(SFML_INSTALL_THIRD_PARTY)
+	if(SFML_OS_WINDOWS)
+	    if(ARCH_32BITS)
+	        install(DIRECTORY extlibs/bin/x86/ DESTINATION bin)
+	        if(SFML_COMPILER_MSVC)
+	            install(DIRECTORY extlibs/libs-msvc/x86/ DESTINATION lib)
+	        else()
+	            install(DIRECTORY extlibs/libs-mingw/x86/ DESTINATION lib)
+	        endif()
+	    elseif(ARCH_64BITS)
+	        install(DIRECTORY extlibs/bin/x64/ DESTINATION bin)
+	        if(SFML_COMPILER_MSVC)
+	            install(DIRECTORY extlibs/libs-msvc/x64/ DESTINATION lib)
+	        else()
+	            install(DIRECTORY extlibs/libs-mingw/x64/ DESTINATION lib)
+	        endif()
+	    endif()
+	elseif(SFML_OS_MACOSX)
+	    install(DIRECTORY extlibs/libs-osx/Frameworks/sndfile.framework DESTINATION ${CMAKE_INSTALL_FRAMEWORK_PREFIX})
+	    install(DIRECTORY extlibs/libs-osx/Frameworks/freetype.framework DESTINATION ${CMAKE_INSTALL_FRAMEWORK_PREFIX})
+	
+	    if(SFML_INSTALL_XCODE4_TEMPLATES)
+	        install(DIRECTORY tools/xcode/templates/SFML DESTINATION /Library/Developer/Xcode/Templates)
+	    endif()
+	endif()
 endif()
